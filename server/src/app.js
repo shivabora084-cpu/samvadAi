@@ -10,6 +10,7 @@ import { logger } from './utils/logger.js';
 import authRoutes from './routes/auth.js';
 import chatRoutes from './routes/chat.js';
 import voiceRoutes from './routes/voice.js';
+import adminRoutes from './routes/admin.js';
 
 export const app = express();
 
@@ -74,6 +75,8 @@ app.get('/api/health', async (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/voice', voiceRoutes);
+app.use('/api', adminRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Centralized error handling
 app.use(errorHandler);
