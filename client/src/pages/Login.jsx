@@ -27,7 +27,15 @@ export default function Login() {
         navigate(from);
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Invalid email or password');
+      console.error('Login error:', err);
+      const apiData = err.response?.data;
+      if (apiData?.message) {
+        setError(apiData.message);
+      } else if (err.message) {
+        setError(`Connection error: ${err.message}. (Render backend might be waking up, please wait ~30 seconds).`);
+      } else {
+        setError('Invalid email or password');
+      }
     } finally {
       setLoading(false);
     }

@@ -23,7 +23,20 @@ export default function Register() {
       await register({ name, email, password, preferredLanguage });
       navigate('/chat');
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed');
+      console.error('Registration error:', err);
+      const apiData = err.response?.data;
+      if (apiData?.errors && Array.isArray(apiData.errors) && apiData.errors.length > 0) {
+        const details = apiData.errors
+          .map((item) => item.message || `${item.field || item.path}: invalid`)
+          .join('. ');
+        setError(`${apiData.message || 'Validation failed'}: ${details}`);
+      } else if (apiData?.message) {
+        setError(apiData.message);
+      } else if (err.message) {
+        setError(`Connection error: ${err.message}. (Render backend might be waking up, please wait a moment).`);
+      } else {
+        setError('Registration failed. Please verify your details or try again.');
+      }
     } finally {
       setLoading(false);
     }
