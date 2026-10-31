@@ -1,7 +1,13 @@
+import dns from 'dns';
 import pkg from 'pg';
 const { Pool } = pkg;
 import { env } from './env.js';
 import { logger } from '../utils/logger.js';
+
+// Prioritize IPv4 addresses for fast, reliable Supabase pooler DNS resolution
+if (dns.setDefaultResultOrder) {
+  dns.setDefaultResultOrder('ipv4first');
+}
 
 const isProduction = env.NODE_ENV === 'production';
 // If DATABASE_URL includes sslmode or is a cloud-hosted URL like Supabase, use SSL
