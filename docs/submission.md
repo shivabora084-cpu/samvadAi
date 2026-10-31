@@ -20,7 +20,7 @@ Beyond static Q&A, SamvadAI autonomously executes structured tool calls—enabli
 
 | Asset | Link / Reference |
 | :--- | :--- |
-| **GitHub Repository** | [https://github.com/your-username/samvadai](https://github.com/your-username/samvadai) *(Replace with your GitHub repo URL)* |
+| **GitHub Repository** | [https://github.com/shivabora084-cpu/samvadAi](https://github.com/shivabora084-cpu/samvadAi) |
 | **Live Deployed Web App (Vercel)** | [https://samvadai-client.vercel.app](https://samvadai-client.vercel.app) *(Replace with your Vercel URL)* |
 | **Live Backend API (Render)** | [https://samvadai-backend.onrender.com](https://samvadai-backend.onrender.com) *(Replace with your Render URL)* |
 | **Demo Video (4 Minutes)** | [https://youtu.be/your-demo-video-id](https://youtu.be/your-demo-video-id) *(Replace with your YouTube/Loom video link)* |

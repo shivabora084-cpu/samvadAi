@@ -135,8 +135,8 @@ samvadai/
 
 ### Step 1: Clone and Configure Environment Files
 ```bash
-git clone https://github.com/your-username/samvadai.git
-cd samvadai
+git clone https://github.com/shivabora084-cpu/samvadAi.git
+cd samvadAi
 
 # Setup backend env
 cp server/.env.example server/.env
