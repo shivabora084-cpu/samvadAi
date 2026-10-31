@@ -7,6 +7,7 @@ import { query } from './config/db.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { generalLimiter } from './middleware/rateLimiter.js';
 import { logger } from './utils/logger.js';
+import authRoutes from './routes/auth.js';
 
 export const app = express();
 
@@ -66,6 +67,9 @@ app.get('/api/health', async (req, res) => {
     });
   }
 });
+
+// Auth API routes
+app.use('/api/auth', authRoutes);
 
 // Centralized error handling
 app.use(errorHandler);
