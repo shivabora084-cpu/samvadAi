@@ -1,0 +1,212 @@
+{
+  "info": {
+    "name": "SamvadAI API Collection",
+    "_postman_id": "7a5d9f8d-7212-4dcb-b716-9aed7f990c42",
+    "description": "Comprehensive Postman collection for SamvadAI Voice & Conversational Intelligence Platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "conversationId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "System Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register Customer",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Priya Patel\",\n  \"email\": \"priya@example.com\",\n  \"password\": \"Priya@123\",\n  \"preferredLanguage\": \"hi\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"] }
+          }
+        },
+        {
+          "name": "Login Admin",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@samvadai.com\",\n  \"password\": \"Admin@Samvad2025!\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Create Guest Session",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"preferredLanguage\": \"ta\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/guest", "host": ["{{baseUrl}}"], "path": ["auth", "guest"] }
+          }
+        },
+        {
+          "name": "Get Profile (/me)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Conversational AI (Chat)",
+      "item": [
+        {
+          "name": "Start Conversation",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"language\": \"en\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/chat/start", "host": ["{{baseUrl}}"], "path": ["chat", "start"] }
+          }
+        },
+        {
+          "name": "Send Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"text\": \"What are the OPD timings and doctor consultation fees?\",\n  \"inputMode\": \"voice\",\n  \"languageHint\": \"en\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/chat/{{conversationId}}/message", "host": ["{{baseUrl}}"], "path": ["chat", "{{conversationId}}", "message"] }
+          }
+        },
+        {
+          "name": "Get Conversation Transcript",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/chat/{{conversationId}}", "host": ["{{baseUrl}}"], "path": ["chat", "{{conversationId}}"] }
+          }
+        },
+        {
+          "name": "Rate Conversation",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"rating\": 5\n}" },
+            "url": { "raw": "{{baseUrl}}/chat/{{conversationId}}/rating", "host": ["{{baseUrl}}"], "path": ["chat", "{{conversationId}}", "rating"] }
+          }
+        },
+        {
+          "name": "End Conversation",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/chat/{{conversationId}}/end", "host": ["{{baseUrl}}"], "path": ["chat", "{{conversationId}}", "end"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Intelligence & Analytics",
+      "item": [
+        {
+          "name": "Overview Metrics",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/analytics/overview", "host": ["{{baseUrl}}"], "path": ["analytics", "overview"] }
+          }
+        },
+        {
+          "name": "14-Day Timeseries",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/analytics/timeseries", "host": ["{{baseUrl}}"], "path": ["analytics", "timeseries"] }
+          }
+        },
+        {
+          "name": "Language Distribution",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/analytics/languages", "host": ["{{baseUrl}}"], "path": ["analytics", "languages"] }
+          }
+        },
+        {
+          "name": "Top Unanswered Questions",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/analytics/top-unanswered", "host": ["{{baseUrl}}"], "path": ["analytics", "top-unanswered"] }
+          }
+        },
+        {
+          "name": "List Knowledge Articles",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/knowledge", "host": ["{{baseUrl}}"], "path": ["knowledge"] }
+          }
+        },
+        {
+          "name": "List Tickets",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/tickets", "host": ["{{baseUrl}}"], "path": ["tickets"] }
+          }
+        },
+        {
+          "name": "List Appointments",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": { "raw": "{{baseUrl}}/appointments", "host": ["{{baseUrl}}"], "path": ["appointments"] }
+          }
+        }
+      ]
+    }
+  ]
+}
