@@ -1,7 +1,7 @@
 -- 002_indexes.sql: Performance & full-text search indexes
 
 -- Enable pg_trgm for fuzzy string matching fallback
-CREATE EXTENSION IF NOT EXISTS "pgtrgm";
+CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 
 -- Full-text search index on generated search_vector
 CREATE INDEX IF NOT EXISTS idx_knowledge_search_vector ON knowledge_entries USING GIN (search_vector);

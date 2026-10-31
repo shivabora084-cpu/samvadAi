@@ -6,6 +6,11 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 -- Ticket sequence for user-friendly ticket codes (e.g., SV-1042)
 CREATE SEQUENCE IF NOT EXISTS ticket_code_seq START WITH 1001;
 
+-- Immutable helper to safely include tags in generated tsvector
+CREATE OR REPLACE FUNCTION immutable_array_to_string(arr text[], sep text)
+RETURNS text LANGUAGE sql IMMUTABLE PARALLEL SAFE AS
+$$ SELECT array_to_string(arr, sep); $$;
+
 -- Users table
 CREATE TABLE IF NOT EXISTS users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -66,7 +71,7 @@ CREATE TABLE IF NOT EXISTS knowledge_entries (
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   search_vector tsvector GENERATED ALWAYS AS (
-    to_tsvector('simple', coalesce(title, '') || ' ' || coalesce(content, '') || ' ' || coalesce(array_to_string(tags, ' '), ''))
+    to_tsvector('simple'::regconfig, coalesce(title, '') || ' ' || coalesce(content, '') || ' ' || coalesce(immutable_array_to_string(tags, ' '), ''))
   ) STORED
 );
 
