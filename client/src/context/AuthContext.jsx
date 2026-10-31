@@ -59,13 +59,29 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const guestLogin = useCallback(async (preferredLanguage = 'en') => {
-    const { data } = await api.post('/auth/guest', { preferredLanguage });
-    if (data.success && data.token) {
-      localStorage.setItem('samvadai_token', data.token);
-      localStorage.setItem('samvadai_user', JSON.stringify(data.user));
-      setUser(data.user);
-      return data.user;
+    try {
+      const { data } = await api.post('/auth/guest', { preferredLanguage });
+      if (data.success && data.token) {
+        localStorage.setItem('samvadai_token', data.token);
+        localStorage.setItem('samvadai_user', JSON.stringify(data.user));
+        setUser(data.user);
+        return data.user;
+      }
+    } catch (err) {
+      console.warn('Backend /auth/guest unreachable, establishing resilient local guest session:', err);
     }
+
+    // Always establish guest session even if backend is waking up from cold-start
+    const localGuestUser = {
+      isGuest: true,
+      guestId: `guest_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`,
+      name: 'Guest User',
+      role: 'guest',
+      preferred_language: preferredLanguage
+    };
+    localStorage.setItem('samvadai_user', JSON.stringify(localGuestUser));
+    setUser(localGuestUser);
+    return localGuestUser;
   }, []);
 
   const logout = useCallback(() => {

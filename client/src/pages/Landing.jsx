@@ -27,6 +27,7 @@ export default function Landing() {
       navigate('/chat');
     } catch (err) {
       console.error('Failed to start guest session:', err);
+      navigate('/chat');
     } finally {
       setGuestLoading(false);
     }

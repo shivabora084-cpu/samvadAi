@@ -268,6 +268,23 @@ export default function Chat() {
         </div>
       )}
 
+      {/* Backend connection / error alert banner */}
+      {convError && (
+        <div className="mb-3 p-3.5 rounded-2xl bg-sky-50 dark:bg-sky-950/40 border border-sky-300 dark:border-sky-800 flex items-center justify-between gap-3 text-xs text-sky-900 dark:text-sky-200 animate-slide-up">
+          <div className="flex items-center gap-2">
+            <RefreshCw className="w-4 h-4 text-sky-600 animate-spin" />
+            <span>{convError}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => initConversation(language)}
+            className="px-3 py-1 bg-sky-600 text-white rounded-lg font-medium hover:bg-sky-700 transition-colors"
+          >
+            Reconnect
+          </button>
+        </div>
+      )}
+
       {/* Scrollable Message Transcript Area */}
       <div
         className="flex-1 overflow-y-auto px-2 py-4 rounded-3xl bg-slate-100/60 dark:bg-slate-900/40 border border-slate-200/80 dark:border-slate-800/80 backdrop-blur-sm shadow-inner"

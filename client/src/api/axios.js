@@ -1,7 +1,21 @@
 import axios from 'axios';
 
+// Ensure baseURL always points to the valid /api endpoint regardless of how VITE_API_URL is configured
+const getBaseURL = () => {
+  const raw = import.meta.env.VITE_API_URL;
+  if (!raw || !raw.trim()) {
+    return 'http://localhost:5000/api';
+  }
+  let clean = raw.trim().replace(/\/+$/, '');
+  if (!clean.endsWith('/api')) {
+    clean = `${clean}/api`;
+  }
+  return clean;
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  baseURL: getBaseURL(),
+  timeout: 60000, // 60s timeout to accommodate Render free tier cold-starts
   headers: {
     'Content-Type': 'application/json'
   }

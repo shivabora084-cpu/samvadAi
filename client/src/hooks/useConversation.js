@@ -52,14 +52,35 @@ export function useConversation() {
         return data;
       }
     } catch (err) {
-      console.error('Failed to initialize conversation:', err);
-      setError('Unable to start conversation session. Please refresh.');
+      console.warn('Backend server waking up or unreachable, using offline greeting:', err);
+      // Fallback greeting if Render backend is waking up or network is delayed
+      const fallbackGreetings = {
+        en: 'Hello! I am SamvadAI. How can I assist you with hospital OPD timings, doctor appointments, or support today?',
+        hi: 'नमस्ते! मैं संवादAI हूँ। आज मैं आपकी क्या सहायता कर सकता हूँ? आप ओपीडी समय, डॉक्टरों, टेस्ट रिपोर्ट या अपॉइंटमेंट के बारे में पूछ सकते हैं।',
+        ta: 'வணக்கம்! நான் சம்வாத்AI. இன்று உங்களுக்கு எவ்வாறு உதவ முடியும்? ஓபிடி நேரம், மருத்துவர்கள், பரிசோதனை முடிவுகள் அல்லது முன்பதிவு பற்றி நீங்கள் கேட்கலாம்.'
+      };
+
+      const fallbackId = `conv_pending_${Date.now()}`;
+      setConversationId(fallbackId);
+      setLanguage(initialLang);
+      setStatus('active');
+      setMessages([
+        {
+          id: 'init-greeting',
+          role: 'assistant',
+          text: fallbackGreetings[initialLang] || fallbackGreetings.en,
+          language: initialLang,
+          intent: 'greeting',
+          sentiment: 'positive',
+          created_at: new Date().toISOString()
+        }
+      ]);
     }
   }, []);
 
   const sendMessage = useCallback(
     async (text, inputMode = 'text', onReply = null) => {
-      if (!text.trim() || !conversationId) return;
+      if (!text.trim()) return;
 
       const optimisticMsg = {
         id: `user-${Date.now()}`,
@@ -74,7 +95,18 @@ export function useConversation() {
       setError(null);
 
       try {
-        const { data } = await api.post(`/chat/${conversationId}/message`, {
+        let activeConvId = conversationId;
+
+        // If conversation was in pending/offline state, initialize on the server now
+        if (!activeConvId || activeConvId.startsWith('conv_pending_')) {
+          const { data: startData } = await api.post('/chat/start', { language });
+          if (startData.success && startData.conversationId) {
+            activeConvId = startData.conversationId;
+            setConversationId(activeConvId);
+          }
+        }
+
+        const { data } = await api.post(`/chat/${activeConvId}/message`, {
           text: text.trim(),
           inputMode,
           languageHint: language
@@ -114,7 +146,7 @@ export function useConversation() {
         }
       } catch (err) {
         console.error('Error sending message:', err);
-        const errMsg = err.response?.data?.message || 'Failed to send message. Please retry.';
+        const errMsg = err.response?.data?.message || 'Connecting to server (Render service may take ~30s on cold start). Please retry in a moment.';
         setError(errMsg);
       } finally {
         setIsThinking(false);
